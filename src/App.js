@@ -97,29 +97,6 @@ function Main({ children }) {
   );
 }
 
-function WatchedList() {
-  const [watched, setWatched] = useState(tempWatchedData);
-  const [isOpen2, setIsOpen2] = useState(true);
-
-  return (
-    <div className="box">
-      <button
-        className="btn-toggle"
-        onClick={() => setIsOpen2((open) => !open)}
-      >
-        {isOpen2 ? "–" : "+"}
-      </button>
-      {isOpen2 && (
-        <>
-          <Summary watched={watched} />
-
-          <WatchedMoviesList watched={watched} />
-        </>
-      )}
-    </div>
-  );
-}
-
 function WatchedMoviesList({ watched }) {
   return (
     <ul className="list">
@@ -182,21 +159,41 @@ function Summary({ watched }) {
   );
 }
 
-function ListBox({ children }) {
-  const [isOpen1, setIsOpen1] = useState(true);
+function Box({ element }) {
+  const [isOpen, setIsOpen] = useState(true);
+
+  return (
+    <div className="box">
+      <button className="btn-toggle" onClick={() => setIsOpen((open) => !open)}>
+        {isOpen ? "–" : "+"}
+      </button>
+      {isOpen && element}
+    </div>
+  );
+}
+
+/* function WatchedList({ children }) {
+  const [watched, setWatched] = useState(tempWatchedData);
+  const [isOpen2, setIsOpen2] = useState(true);
 
   return (
     <div className="box">
       <button
         className="btn-toggle"
-        onClick={() => setIsOpen1((open) => !open)}
+        onClick={() => setIsOpen2((open) => !open)}
       >
-        {isOpen1 ? "–" : "+"}
+        {isOpen2 ? "–" : "+"}
       </button>
-      {isOpen1 && children}
+      {isOpen2 && (
+        <>
+          <Summary watched={watched} />
+
+          <WatchedMoviesList watched={watched} />
+        </>
+      )}
     </div>
   );
-}
+} */
 
 function MoviesList({ movies }) {
   return (
@@ -225,6 +222,7 @@ function Movie({ movie }) {
 
 export default function App() {
   const [movies, setMovies] = useState(tempMovieData);
+  const [watched, setWatched] = useState(tempWatchedData);
   return (
     <>
       <NavBar>
@@ -232,10 +230,15 @@ export default function App() {
         <NumResults movies={movies} />
       </NavBar>
       <Main movies={movies}>
-        <ListBox movies={movies}>
-          <MoviesList movies={movies} />
-        </ListBox>
-        <WatchedList movies={movies} />
+        <Box element={<MoviesList movies={movies} />} />
+        <Box
+          element={
+            <>
+              <Summary watched={watched} />
+              <WatchedMoviesList watched={watched} />
+            </>
+          }
+        />
       </Main>
     </>
   );
